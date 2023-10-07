@@ -12,9 +12,9 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
     - name: Build Release
       shell: cmd
-      run: msbuild Osiris.sln /p:Platform=x86 /p:Configuration=Release
+      run: msbuild Osiris.sln /p:Platform=x64 /p:Configuration=Release
     - name: Publish DLL as Artifact
       uses: actions/upload-artifact@v2
       with:
         name: OsirisDll
-        path: ./Release/Osiris.dll
+        path: ./x64/Release/Osiris.dll
