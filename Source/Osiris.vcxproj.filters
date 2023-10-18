@@ -82,6 +82,9 @@
     <Filter Include="MemorySearch">
       <UniqueIdentifier>{28ecac3b-05f9-44d1-86cb-50d8fe91ff36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameDLLs">
+      <UniqueIdentifier>{b8552b92-9c5f-4168-bd92-43404a4af17e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CS2\Classes\C_CSGameRules.h">
@@ -533,6 +536,33 @@
     </ClInclude>
     <ClInclude Include="Hooks\Hooks.h">
       <Filter>Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="CS2\Classes\CUtlFilenameSymbolTable.h">
+      <Filter>CS2\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDLLs\Tier0Dll.h">
+      <Filter>GameDLLs</Filter>
+    </ClInclude>
+    <ClInclude Include="CS2\Classes\FileSystem.h">
+      <Filter>CS2\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\FileSystemPatterns.h">
+      <Filter>MemoryPatterns</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\Linux\FileSystemPatternsLinux.h">
+      <Filter>MemoryPatterns\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\Windows\FileSystemPatternsWindows.h">
+      <Filter>MemoryPatterns\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClasses\OffsetTypes\FileSystemOffset.h">
+      <Filter>GameClasses\OffsetTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClasses\Implementation\FileSystemImpl.h">
+      <Filter>GameClasses\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClasses\FileSystem.h">
+      <Filter>GameClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
