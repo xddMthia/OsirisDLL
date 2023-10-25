@@ -85,6 +85,9 @@
     <Filter Include="GameDLLs">
       <UniqueIdentifier>{b8552b92-9c5f-4168-bd92-43404a4af17e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FeatureHelpers">
+      <UniqueIdentifier>{60a8534c-f923-48e7-a211-854c06b1456e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CS2\Classes\C_CSGameRules.h">
@@ -563,6 +566,24 @@
     </ClInclude>
     <ClInclude Include="GameClasses\FileSystem.h">
       <Filter>GameClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="CS2\Classes\Sound.h">
+      <Filter>CS2\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\SoundSystemPatterns.h">
+      <Filter>MemoryPatterns</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\Windows\SoundSystemPatternsWindows.h">
+      <Filter>MemoryPatterns\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\Linux\SoundSystemPatternsLinux.h">
+      <Filter>MemoryPatterns\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureHelpers\TogglableFeature.h">
+      <Filter>FeatureHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureHelpers\NormalizedDeviceCoordinates.h">
+      <Filter>FeatureHelpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

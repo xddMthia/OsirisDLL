@@ -24,6 +24,7 @@
     <ClInclude Include="CS2\Classes\GlobalVars.h" />
     <ClInclude Include="CS2\Classes\IMemAlloc.h" />
     <ClInclude Include="CS2\Classes\Panorama.h" />
+    <ClInclude Include="CS2\Classes\Sound.h" />
     <ClInclude Include="CS2\Classes\Vector.h" />
     <ClInclude Include="CS2\Classes\VMatrix.h" />
     <ClInclude Include="CS2\Constants\BombSiteIndex.h" />
@@ -31,6 +32,8 @@
     <ClInclude Include="CS2\Constants\EntityHandle.h" />
     <ClInclude Include="CS2\Constants\PanelIDs.h" />
     <ClInclude Include="Endpoints.h" />
+    <ClInclude Include="FeatureHelpers\NormalizedDeviceCoordinates.h" />
+    <ClInclude Include="FeatureHelpers\TogglableFeature.h" />
     <ClInclude Include="Features\Features.h" />
     <ClInclude Include="Features\Hud\BombTimer.h" />
     <ClInclude Include="Features\Hud\DefusingAlert.h" />
@@ -99,12 +102,14 @@
     <ClInclude Include="MemoryPatterns\Linux\PanoramaUiEnginePatternsLinux.h" />
     <ClInclude Include="MemoryPatterns\Linux\PanoramaUiPanelPatternsLinux.h" />
     <ClInclude Include="MemoryPatterns\Linux\PlantedC4PatternsLinux.h" />
+    <ClInclude Include="MemoryPatterns\Linux\SoundSystemPatternsLinux.h" />
     <ClInclude Include="MemoryPatterns\MemAllocPatterns.h" />
     <ClInclude Include="MemoryPatterns\PanoramaImagePanelPatterns.h" />
     <ClInclude Include="MemoryPatterns\PanoramaLabelPatterns.h" />
     <ClInclude Include="MemoryPatterns\PanoramaUiEnginePatterns.h" />
     <ClInclude Include="MemoryPatterns\PanoramaUiPanelPatterns.h" />
     <ClInclude Include="MemoryPatterns\PlantedC4Patterns.h" />
+    <ClInclude Include="MemoryPatterns\SoundSystemPatterns.h" />
     <ClInclude Include="MemoryPatterns\Windows\ClientModePatternsWindows.h" />
     <ClInclude Include="MemoryPatterns\Windows\ClientPatternsWindows.h" />
     <ClInclude Include="MemoryPatterns\Windows\FileSystemPatternsWindows.h" />
@@ -115,6 +120,7 @@
     <ClInclude Include="MemoryPatterns\Windows\PanoramaUiEnginePatternsWindows.h" />
     <ClInclude Include="MemoryPatterns\Windows\PanoramaUiPanelPatternsWindows.h" />
     <ClInclude Include="MemoryPatterns\Windows\PlantedC4PatternsWindows.h" />
+    <ClInclude Include="MemoryPatterns\Windows\SoundSystemPatternsWindows.h" />
     <ClInclude Include="MemoryPatterns\Windows\WindowsPatterns.h" />
     <ClInclude Include="MemorySearch\BytePattern.h" />
     <ClInclude Include="MemorySearch\BytePatternConverter.h" />
