@@ -7,6 +7,7 @@
 #include <FeatureHelpers/Sound/SoundWatcher.h>
 #include <FeatureHelpers/TogglableFeature.h>
 #include <FeatureHelpers/WorldToClipSpaceConverter.h>
+#include <GameClasses/Panel.h>
 #include <GameClasses/PanoramaUiEngine.h>
 #include <Helpers/HudProvider.h>
 #include <Helpers/PanoramaTransformFactory.h>
@@ -109,13 +110,19 @@ private:
         if (!hudReticle)
             return;
 
-        PanoramaUiEngine::runScript(hudReticle,
-            R"(
-$.CreatePanel('Panel', $.GetContextPanel(), 'BombPlantContainer', {
-  style: 'width: 100%; height: 100%;'
-});)", "", 0);
+        const auto bombPlantContainer = Panel::create("BombPlantContainer", hudReticle);
+        if (!bombPlantContainer)
+            return;
 
-        bombPlantContainerPanelPointer = hudReticle.findChildInLayoutFile("BombPlantContainer");
+        bombPlantContainerPanelPointer = bombPlantContainer->uiPanel;
+        const auto bombPlantContainerPanel = bombPlantContainerPanelPointer.get();
+        if (!bombPlantContainerPanel)
+            return;
+
+        if (const auto style = bombPlantContainerPanel.getStyle()) {
+            style.setWidth(cs2::CUILength{ 100.0f, cs2::CUILength::k_EUILengthPercent });
+            style.setHeight(cs2::CUILength{ 100.0f, cs2::CUILength::k_EUILengthPercent });
+        }
 
         for (std::size_t i = 0; i < kMaxNumberOfBombPlantsToDraw; ++i) {
             PanoramaUiEngine::runScript(hudReticle,
