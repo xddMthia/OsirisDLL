@@ -1,7 +1,7 @@
 #pragma once
 
 #include <FeatureHelpers/FeatureHelpers.h>
-#include "ScopeOverlayRemover/ScopeOverlayRemover.h"
+#include "ScopeOverlayRemover.h"
 #include "SniperScopeBlurRemovalFeature.h"
 #include "VisualFeaturesStates.h"
 
@@ -10,7 +10,7 @@ class LoopModeGameHook;
 struct VisualFeatures {
     [[nodiscard]] ScopeOverlayRemover scopeOverlayRemover() const noexcept
     {
-        return ScopeOverlayRemover{states.scopeOverlayRemoverState, helpers.mainMenu, helpers.hudScope, loopModeGameHook, helpers.sniperScopeBlurRemover};
+        return ScopeOverlayRemover{states.scopeOverlayRemoverState, helpers.mainMenu, helpers.hudProvider, helpers.hudScope, loopModeGameHook, helpers.sniperScopeBlurRemover};
     }
 
     [[nodiscard]] SniperScopeBlurRemovalFeature sniperScopeBlurRemoval() const noexcept
