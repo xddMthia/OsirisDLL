@@ -22,6 +22,16 @@ struct PanelStylePropertyFactory {
         return create<cs2::CStylePropertyOpacity>(VMTs.opacityPropertyVmt, symbols.opacity, opacity);
     }
 
+    [[nodiscard]] cs2::CStylePropertyZIndex* zIndex(float zIndex) const noexcept
+    {
+        return create<cs2::CStylePropertyZIndex>(VMTs.zIndexPropertyVmt, symbols.zIndex, zIndex);
+    }
+
+    [[nodiscard]] cs2::CStylePropertyHeight* height(cs2::CUILength height) const noexcept
+    {
+        return create<cs2::CStylePropertyHeight>(VMTs.heightPropertyVmt, symbols.height, height);
+    }
+
 private:
     template <typename T, typename... Args>
     [[nodiscard]] T* create(const void* vmt, cs2::CStyleSymbol symbol, Args&&... args) const noexcept
