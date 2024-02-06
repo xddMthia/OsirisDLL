@@ -944,6 +944,15 @@
     <ClInclude Include="SDL\SdlFunctions.h">
       <Filter>SDL</Filter>
     </ClInclude>
+    <ClInclude Include="MemoryPatterns\Windows\SdlPatternWindows.h">
+      <Filter>MemoryPatterns\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryPatterns\SdlPatterns.h">
+      <Filter>MemoryPatterns</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL\SdlDll.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Panorama\CreateGUI.js">

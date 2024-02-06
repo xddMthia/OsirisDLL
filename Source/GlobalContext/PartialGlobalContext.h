@@ -2,11 +2,18 @@
 
 #include <CS2/Constants/DllNames.h>
 #include <Hooks/PeepEventsHook.h>
+#include <MemoryPatterns/SdlPatterns.h>
 #include <Platform/DynamicLibrary.h>
 #include <Platform/Macros/PlatformSpecific.h>
+#include <SDL/SdlDll.h>
 
 struct PartialGlobalContext {
-    PeepEventsHook peepEventsHook{DynamicLibrary{cs2::SDL_DLL}.getFunctionAddress("SDL_PeepEvents").add(WIN32_LINUX(3, 2)).abs().as<sdl3::SDL_PeepEvents**>()};
+    explicit PartialGlobalContext(SdlDll sdlDll, SdlPatterns sdlPatterns) noexcept
+        : peepEventsHook{sdlPatterns.peepEventsPointer(sdlDll.peepEvents())}
+    {
+    }
+
+    PeepEventsHook peepEventsHook;
 
     void enableIfValid() noexcept
     {
