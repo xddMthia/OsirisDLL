@@ -17,26 +17,36 @@ struct BombDefusePanels {
         return inWorldFactory.createPanel("BombDefuseContainer", HudInWorldPanelZOrder::BombDefuse);
     }
 
-    static void createContentPanels(cs2::CUIPanel& containerPanel, [[maybe_unused]] PanelConfigurator panelConfigurator) noexcept
+    [[nodiscard]] static PanoramaUiPanel createContentPanel(cs2::CUIPanel* containerPanel, PanelConfigurator panelConfigurator) noexcept
     {
-        for (std::size_t i = 0; i < kMaxNumberOfPanels; ++i) {
-            PanoramaUiEngine::runScript(&containerPanel,
-                R"(
-(function() {
-var bombDefusePanel = $.CreatePanel('Panel', $.GetContextPanel().FindChildInLayoutFile("BombDefuseContainer"), '', {
-  style: 'width: 100px; height: 100px; x: -50px; y: -50px;'
-});
+        const auto panel = Panel::create("", containerPanel);
+        if (!panel)
+            return PanoramaUiPanel{nullptr};
 
-$.CreatePanel('Image', bombDefusePanel, '', {
-  src: "s2r://panorama/images/icons/equipment/defuser.vsvg",
-  style: "horizontal-align: center; vertical-align: center; img-shadow: 0px 0px 1px 3 #000000;",
-  textureheight: "40"
-});
-})();)", "", 0);
+        if (const auto style{PanoramaUiPanel{panel->uiPanel}.getStyle()}) {
+            const auto styleConfigurator{panelConfigurator.panelStyle(*style)};
+            styleConfigurator.setWidth(cs2::CUILength::pixels(100));
+            styleConfigurator.setHeight(cs2::CUILength::pixels(100));
+            styleConfigurator.setPosition(cs2::CUILength::pixels(-50), cs2::CUILength::pixels(-50));
         }
-    }
 
-    static constexpr auto kMaxNumberOfPanels = 5;
+        if (const auto imagePanel{PanoramaImagePanel::create("", panel->uiPanel)}) {
+            PanoramaImagePanel{imagePanel}.setImageSvg("s2r://panorama/images/icons/equipment/defuser.vsvg", 40);
+            if (const auto style{PanoramaUiPanel{imagePanel->uiPanel}.getStyle()}) {
+                const auto styleSetter{panelConfigurator.panelStyle(*style)};
+                styleSetter.setAlign(cs2::k_EHorizontalAlignmentCenter, cs2::k_EVerticalAlignmentCenter);
+                styleSetter.setImageShadow(ImageShadowParams{
+                    .horizontalOffset{cs2::CUILength::pixels(0)},
+                    .verticalOffset{cs2::CUILength::pixels(0)},
+                    .blurRadius{cs2::CUILength::pixels(1)},
+                    .strength = 3,
+                    .color{0, 0, 0}
+                });
+            }
+        }
+
+        return PanoramaUiPanel{panel->uiPanel};
+    }
 };
 
 using BombDefuseVisualizerState = SoundVisualizationFeatureState<BombDefusePanels>;
