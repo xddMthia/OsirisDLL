@@ -1,55 +1,54 @@
 #pragma once
 
-#include "GlobalVarsProvider.h"
+#include "EntitiesVMTs.h"
 #include <Helpers/HudProvider.h>
 #include <Helpers/PanoramaTransformFactory.h>
-#include <Helpers/PlantedC4Provider.h>
 #include "HudInWorldPanelContainer.h"
 #include "MainMenuProvider.h"
+#include <MemoryPatterns/SoundSystemPatterns.h>
 #include "PanelConfigurator.h"
-#include "Sound/SoundWatcher.h"
-#include "StylePropertiesSymbols.h"
-#include "StylePropertiesVMTs.h"
+#include "Sound/SoundWatcherState.h"
+#include "StylePropertiesSymbolsAndVMTs.h"
 #include "StylePropertySymbolMap.h"
 #include "ViewToProjectionMatrix.h"
-#include "Visuals/SniperScopeBlurRemover.h"
 #include "WorldToClipSpaceConverter.h"
 
 struct FeatureHelpers {
-    explicit FeatureHelpers(const ClientPatterns& clientPatterns, const PanelStylePatterns& panelStylePatterns, const FileSystemPatterns& fileSystemPatterns, const SoundSystemPatterns& soundSystemPatterns, const VmtFinder& panoramaVmtFinder) noexcept
+    explicit FeatureHelpers(const ClientPatterns& clientPatterns, const PanelStylePatterns& panelStylePatterns, const FileSystemPatterns& fileSystemPatterns, const SoundSystemPatterns& soundSystemPatterns, const VmtFinder& panoramaVmtFinder, const VmtFinder& clientVmtFinder) noexcept
         : hudProvider{clientPatterns}
-        , globalVarsProvider{clientPatterns}
+        , globalVars{clientPatterns.globalVars()}
         , transformFactory{clientPatterns}
         , worldtoClipSpaceConverter{clientPatterns}
-        , plantedC4Provider{clientPatterns}
         , viewToProjectionMatrix{clientPatterns}
-        , sniperScopeBlurRemover{clientPatterns}
-        , stylePropertiesVMTs{panoramaVmtFinder}
-        , stylePropertiesSymbols{StylePropertySymbolMap{panelStylePatterns.stylePropertiesSymbols()}}
-        , soundWatcher{fileSystemPatterns, soundSystemPatterns}
+        , stylePropertiesSymbolsAndVMTs{StylePropertySymbolMap{panelStylePatterns.stylePropertiesSymbols()}, panoramaVmtFinder}
         , gameRules{clientPatterns.gameRules()}
-        , hudScope{clientPatterns.hudScope()}
         , mainMenuProvider{clientPatterns}
+        , localPlayerController{clientPatterns.localPlayerController()}
+        , entitiesVMTs{clientVmtFinder}
+        , plantedC4s{clientPatterns.plantedC4s()}
+        , soundChannels{soundSystemPatterns.soundChannels()}
+        , fileSystem{fileSystemPatterns.fileSystem()}
     {
     }
 
     [[nodiscard]] PanelConfigurator panelConfigurator() const noexcept
     {
-        return PanelConfigurator{PanelStylePropertyFactory{stylePropertiesVMTs, stylePropertiesSymbols}};    
+        return PanelConfigurator{PanelStylePropertyFactory{stylePropertiesSymbolsAndVMTs}};    
     }
 
     HudProvider hudProvider;
-    GlobalVarsProvider globalVarsProvider;
+    cs2::GlobalVars** globalVars;
     PanoramaTransformFactory transformFactory;
     WorldToClipSpaceConverter worldtoClipSpaceConverter;
-    PlantedC4Provider plantedC4Provider;
     HudInWorldPanelContainer hudInWorldPanelContainer;
     ViewToProjectionMatrix viewToProjectionMatrix;
-    SniperScopeBlurRemover sniperScopeBlurRemover;
-    StylePropertiesVMTs stylePropertiesVMTs;
-    StylePropertiesSymbols stylePropertiesSymbols;
-    SoundWatcher soundWatcher;
+    StylePropertiesSymbolsAndVMTs stylePropertiesSymbolsAndVMTs;
+    SoundWatcherState soundWatcherState;
     cs2::C_CSGameRules** gameRules;
-    cs2::CPanel2D** hudScope;
     MainMenuProvider mainMenuProvider;
+    cs2::CCSPlayerController** localPlayerController;
+    EntitiesVMTs entitiesVMTs;
+    cs2::CUtlVector<cs2::CPlantedC4*>* plantedC4s;
+    cs2::SoundChannels** soundChannels;
+    cs2::CBaseFileSystem** fileSystem;
 };

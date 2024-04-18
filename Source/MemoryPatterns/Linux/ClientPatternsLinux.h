@@ -3,11 +3,6 @@
 #include <MemoryPatterns/ClientPatterns.h>
 #include <MemorySearch/BytePatternLiteral.h>
 
-inline cs2::CPanel2D** ClientPatterns::hudScope() const noexcept
-{
-    return clientPatternFinder("75 19 48 8D 05 ? ? ? ? 48 8B 00 48"_pat).add(5).abs().as<cs2::CPanel2D**>();
-}
-
 inline cs2::CUIEngine** ClientPatterns::uiEngine() const noexcept
 {
     return clientPatternFinder("48 89 E5 48 89 3D ? ? ? ? E8"_pat).add(6).abs().as<cs2::CUIEngine**>();
@@ -76,4 +71,9 @@ inline cs2::VMatrix* ClientPatterns::viewToProjectionMatrix() const noexcept
 inline cs2::CViewRender** ClientPatterns::viewRender() const noexcept
 {
     return clientPatternFinder("48 8D 05 ? ? ? ? 48 89 38"_pat).add(3).abs().as<cs2::CViewRender**>();
+}
+
+inline cs2::CCSPlayerController** ClientPatterns::localPlayerController() const noexcept
+{
+    return clientPatternFinder("48 8D 05 ? ? ? ? 48 63 FF 48 8B 04 F8 48"_pat).add(3).abs().as<cs2::CCSPlayerController**>();
 }

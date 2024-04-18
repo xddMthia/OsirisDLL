@@ -1,24 +1,38 @@
 #pragma once
 
 #include <FeatureHelpers/FeatureHelpers.h>
-#include "ScopeOverlayRemover.h"
-#include "SniperScopeBlurRemovalFeature.h"
+#include "PlayerInformationThroughWalls.h"
 #include "States/VisualFeaturesStates.h"
 
 class LoopModeGameHook;
 
 struct VisualFeatures {
-    [[nodiscard]] ScopeOverlayRemover scopeOverlayRemover() const noexcept
+    [[nodiscard]] PlayerInformationThroughWallsToggle playerInformationThroughWalls() const noexcept
     {
-        return ScopeOverlayRemover{states.scopeOverlayRemoverState, helpers.mainMenuProvider, helpers.hudProvider, helpers.hudScope, loopModeGameHook, helpers.sniperScopeBlurRemover};
+        return PlayerInformationThroughWallsToggle{states.playerInformationThroughWallsState, helpers.hudInWorldPanelContainer, viewRenderHook, helpers.panelConfigurator(), helpers.hudProvider};
     }
 
-    [[nodiscard]] SniperScopeBlurRemovalFeature sniperScopeBlurRemoval() const noexcept
+    [[nodiscard]] PlayerPositionToggle playerPositionToggle() const noexcept
     {
-        return SniperScopeBlurRemovalFeature{states.sniperScopeBlurRemovalFeatureState, loopModeGameHook, helpers.sniperScopeBlurRemover};
+        return PlayerPositionToggle{states.playerInformationThroughWallsState};
+    }
+
+    [[nodiscard]] PlayerHealthToggle playerHealthToggle() const noexcept
+    {
+        return PlayerHealthToggle{states.playerInformationThroughWallsState};
+    }
+
+    [[nodiscard]] PlayerHealthTextColorToggle playerHealthTextColorToggle() const noexcept
+    {
+        return PlayerHealthTextColorToggle{states.playerInformationThroughWallsState.playerHealthTextColor};
+    }
+
+    [[nodiscard]] PlayerActiveWeaponToggle playerActiveWeaponToggle() const noexcept
+    {
+        return PlayerActiveWeaponToggle{states.playerInformationThroughWallsState};
     }
 
     VisualFeaturesStates& states;
     FeatureHelpers& helpers;
-    LoopModeGameHook& loopModeGameHook;
+    ViewRenderHook& viewRenderHook;
 };

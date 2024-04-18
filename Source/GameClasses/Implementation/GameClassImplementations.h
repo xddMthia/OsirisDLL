@@ -1,10 +1,11 @@
 #pragma once
 
-#include "ClientModeImpl.h"
+#include "EntityImpl.h"
 #include "EntitySystemImpl.h"
 #include "FileNameSymbolTableImpl.h"
 #include "FileSystemImpl.h"
 #include "GameRulesImpl.h"
+#include "GameSceneNodeImpl.h"
 #include "MemAllocImpl.h"
 #include "PanelImpl.h"
 #include "PanelStyleImpl.h"
@@ -13,45 +14,47 @@
 #include "PanoramaUiEngineImpl.h"
 #include "PanoramaUiPanelImpl.h"
 #include "PlantedC4Impl.h"
+#include "PlayerControllerImpl.h"
+#include "PlayerPawnImpl.h"
+#include "TopLevelWindowImpl.h"
+#include "WeaponServicesImpl.h"
+#include "WeaponVDataImpl.h"
 
 #include <Platform/VmtFinder.h>
 
 struct GameClassImplementations {
-    GameClassImplementations(const ClientModePatterns& clientModePatterns,
-                             const ClientPatterns& clientPatterns,
+    GameClassImplementations(const PatternFinder<PatternNotFoundLogger>& clientPatternFinder,
+                             const PatternFinder<PatternNotFoundLogger>& panoramaPatternFinder,
                              const FileSystemPatterns& fileSystemPatterns,
-                             const GameRulesPatterns& gameRulesPatterns,
-                             const MemAllocPatterns& memAllocPatterns,
-                             const PanelPatterns& panelPatterns,
-                             const PanelStylePatterns& panelStylePatterns,
-                             const PanoramaImagePanelPatterns& panoramaImagePanelPatterns,
-                             const PanoramaLabelPatterns& panoramaLabelPatterns,
-                             const PanoramaUiEnginePatterns& panoramaUiEnginePatterns,
-                             const PanoramaUiPanelPatterns& panoramaUiPanelPatterns,
-                             const PlantedC4Patterns& plantedC4Patterns,
-                             const EntitySystemPatterns& entitySystemPatterns,
                              Tier0Dll tier0Dll) noexcept
-        : clientMode{clientModePatterns}
-        , entitySystem{entitySystemPatterns}
+        : entity{EntityPatterns{clientPatternFinder}}
+        , entitySystem{EntitySystemPatterns{clientPatternFinder}}
         , fileNameSymbolTable{tier0Dll}
         , fileSystem{fileSystemPatterns}
-        , gameRules{gameRulesPatterns}
-        , memAlloc{tier0Dll, memAllocPatterns}
-        , panel{panelPatterns}
-        , panelStyle{panelStylePatterns}
-        , imagePanel{panoramaImagePanelPatterns}
-        , panoramaLabel{panoramaLabelPatterns}
-        , uiEngine{clientPatterns, panoramaUiEnginePatterns}
-        , panoramaUiPanelOffsets{panoramaUiPanelPatterns}
-        , plantedC4{plantedC4Patterns}
+        , gameRules{GameRulesPatterns{clientPatternFinder}}
+        , gameSceneNode{GameSceneNodePatterns{clientPatternFinder}}
+        , memAlloc{tier0Dll, MemAllocPatterns{clientPatternFinder}}
+        , panel{PanelPatterns{clientPatternFinder}}
+        , panelStyle{PanelStylePatterns{panoramaPatternFinder}}
+        , imagePanel{PanoramaImagePanelPatterns{clientPatternFinder}}
+        , panoramaLabel{PanoramaLabelPatterns{clientPatternFinder}}
+        , uiEngine{ClientPatterns{clientPatternFinder}, PanoramaUiEnginePatterns{panoramaPatternFinder}}
+        , panoramaUiPanelOffsets{PanoramaUiPanelPatterns{clientPatternFinder, panoramaPatternFinder}}
+        , plantedC4{PlantedC4Patterns{clientPatternFinder}}
+        , playerController{PlayerControllerPatterns{clientPatternFinder}}
+        , playerPawn{PlayerPawnPatterns{clientPatternFinder}}
+        , topLevelWindow{TopLevelWindowPatterns{panoramaPatternFinder}}
+        , weaponServices{WeaponServicesPatterns{clientPatternFinder}}
+        , weaponVData{WeaponVDataPatterns{clientPatternFinder}}
     {
     }
 
-    ClientModeImpl clientMode;
+    EntityImpl entity;
     EntitySystemImpl entitySystem;
     FileNameSymbolTableImpl fileNameSymbolTable;
     FileSystemImpl fileSystem;
     GameRulesImpl gameRules;
+    GameSceneNodeImpl gameSceneNode;
     MemAllocImpl memAlloc;
     PanelImpl panel;
     PanelStyleImpl panelStyle;
@@ -60,4 +63,9 @@ struct GameClassImplementations {
     PanoramaUiEngineImpl uiEngine;
     PanoramaUiPanelImpl panoramaUiPanelOffsets;
     PlantedC4Impl plantedC4;
+    PlayerControllerImpl playerController;
+    PlayerPawnImpl playerPawn;
+    TopLevelWindowImpl topLevelWindow;
+    WeaponServicesImpl weaponServices;
+    WeaponVDataImpl weaponVData;
 };

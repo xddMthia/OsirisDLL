@@ -4,6 +4,7 @@
 #include <GameClasses/Implementation/GameClassImplementations.h>
 #include <GameDLLs/Tier0Dll.h>
 #include <FeatureHelpers/FeatureHelpers.h>
+#include <FeatureHelpers/RenderingHookEntityLoop.h>
 #include <FeatureHelpers/Sound/SoundWatcher.h>
 #include <Features/Features.h>
 #include <Features/FeaturesStates.h>
@@ -11,7 +12,6 @@
 #include <Helpers/UnloadFlag.h>
 #include <Hooks/Hooks.h>
 #include <Hooks/PeepEventsHook.h>
-#include <MemoryPatterns/ClientModePatterns.h>
 #include <MemoryPatterns/ClientPatterns.h>
 #include <MemoryPatterns/FileSystemPatterns.h>
 #include <MemoryPatterns/GameRulesPatterns.h>
@@ -24,6 +24,7 @@
 #include <MemoryPatterns/PanoramaUiPanelPatterns.h>
 #include <MemoryPatterns/PlantedC4Patterns.h>
 #include <MemoryPatterns/SoundSystemPatterns.h>
+#include <MemoryPatterns/TopLevelWindowPatterns.h>
 #include <MemorySearch/PatternFinder.h>
 #include <UI/Panorama/PanoramaGUI.h>
 #include <Platform/DynamicLibrary.h>
@@ -35,19 +36,9 @@
 struct FullGlobalContext {
     FullGlobalContext(PeepEventsHook peepEventsHook, DynamicLibrary clientDLL, DynamicLibrary panoramaDLL, const PatternFinder<PatternNotFoundLogger>& clientPatternFinder, const PatternFinder<PatternNotFoundLogger>& panoramaPatternFinder, const PatternFinder<PatternNotFoundLogger>& soundSystemPatternFinder, const FileSystemPatterns& fileSystemPatterns) noexcept
         : _gameClasses{
-            ClientModePatterns{clientPatternFinder},
-            ClientPatterns{clientPatternFinder},
+            clientPatternFinder,
+            panoramaPatternFinder,
             fileSystemPatterns,
-            GameRulesPatterns{clientPatternFinder},
-            MemAllocPatterns{clientPatternFinder},
-            PanelPatterns{clientPatternFinder},
-            PanelStylePatterns{panoramaPatternFinder},
-            PanoramaImagePanelPatterns{clientPatternFinder},
-            PanoramaLabelPatterns{clientPatternFinder},
-            PanoramaUiEnginePatterns{panoramaPatternFinder},
-            PanoramaUiPanelPatterns{clientPatternFinder, panoramaPatternFinder},
-            PlantedC4Patterns{clientPatternFinder},
-            EntitySystemPatterns{clientPatternFinder},
             Tier0Dll{}}
         , hooks{
             peepEventsHook,
@@ -58,7 +49,8 @@ struct FullGlobalContext {
             PanelStylePatterns{panoramaPatternFinder},
             fileSystemPatterns,
             SoundSystemPatterns{soundSystemPatternFinder},
-            VmtFinder{panoramaDLL.getVmtFinderParams()}}
+            VmtFinder{panoramaDLL.getVmtFinderParams()},
+            VmtFinder{clientDLL.getVmtFinderParams()}}
     {
     }
 
@@ -75,21 +67,28 @@ struct FullGlobalContext {
     void onRenderStart(cs2::CViewRender* thisptr) noexcept
     {
         hooks.viewRenderHook.getOriginalOnRenderStart()(thisptr);
-        if (featureHelpers.globalVarsProvider && featureHelpers.globalVarsProvider.getGlobalVars())
-            featureHelpers.soundWatcher.update(featureHelpers.globalVarsProvider.getGlobalVars()->curtime);
-        features().soundFeatures().runOnViewMatrixUpdate();
+
+        HookDependencies dependencies{_gameClasses, featureHelpers};
+        SoundWatcher soundWatcher{featureHelpers.soundWatcherState, dependencies};
+        soundWatcher.update();
+        features(dependencies).soundFeatures().runOnViewMatrixUpdate();
+
+        PlayerInformationThroughWalls playerInformationThroughWalls{featuresStates.visualFeaturesStates.playerInformationThroughWallsState, dependencies};
+        RenderingHookEntityLoop{dependencies, playerInformationThroughWalls}.run();
+        playerInformationThroughWalls.hideUnusedPanels();
     }
 
     [[nodiscard]] PeepEventsHookResult onPeepEventsHook() noexcept
     {
-        features().hudFeatures().bombTimer().run();
-        features().hudFeatures().defusingAlert().run();
-        features().hudFeatures().killfeedPreserver().run();
+        HookDependencies dependencies{_gameClasses, featureHelpers};
+
+        features(dependencies).hudFeatures().bombTimer().run();
+        features(dependencies).hudFeatures().defusingAlert().run();
+        features(dependencies).hudFeatures().killfeedPreserver().run();
 
         UnloadFlag unloadFlag;
-        panoramaGUI.run(features(), unloadFlag);
+        panoramaGUI.run(features(dependencies), unloadFlag);
         hooks.update();
-        features().visualFeatures().scopeOverlayRemover().updatePanelVisibility();
 
         if (unloadFlag)
             hooks.forceUninstall();
@@ -97,16 +96,15 @@ struct FullGlobalContext {
         return PeepEventsHookResult{hooks.peepEventsHook.original, static_cast<bool>(unloadFlag)};
     }
 
-    [[nodiscard]] cs2::CLoopModeGame::getWorldSession getWorldSessionHook(ReturnAddress returnAddress) noexcept
+    [[nodiscard]] cs2::CLoopModeGame::getWorldSession getWorldSessionHook(ReturnAddress) noexcept
     {
-        featureHelpers.sniperScopeBlurRemover.getWorldSessionHook(returnAddress);
         return hooks.loopModeGameHook.originalGetWorldSession;
     }
 
 private:
-    [[nodiscard]] Features features() noexcept
+    [[nodiscard]] Features features(HookDependencies& dependencies) noexcept
     {
-        return Features{featuresStates, featureHelpers, hooks};
+        return Features{featuresStates, featureHelpers, hooks, dependencies};
     }
 
     GameClassImplementations _gameClasses;

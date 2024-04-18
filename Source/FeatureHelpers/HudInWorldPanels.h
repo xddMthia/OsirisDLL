@@ -1,49 +1,30 @@
 #pragma once
 
-#include "HudInWorldPanelFactory.h"
-#include "PanelConfigurator.h"
+#include <cassert>
+#include <limits>
+#include <utility>
 
-template <typename T>
-class HudInWorldPanels {
-public:
-    void createPanels(const HudInWorldPanelFactory& inWorldFactory) noexcept
+#include <CS2/Classes/Panorama.h>
+#include <GameClasses/PanoramaUiPanel.h>
+
+#include "HudInWorldPanelIndex.h"
+
+struct HudInWorldPanels {
+    [[nodiscard]] PanoramaUiPanel getPanel(HudInWorldPanelIndex index) const noexcept
     {
-        if (containerPanelPointer.get())
-            return;
-
-        const auto containerPanel = T::createContainerPanel(inWorldFactory);
-        if (!containerPanel)
-            return;
-
-        containerPanelPointer = containerPanel->uiPanel;
-        T::createContentPanels(*containerPanel->uiPanel);
+        if (std::cmp_less(index, containerPanelChildren.size))
+            return PanoramaUiPanel{containerPanelChildren.memory[index]};
+        return PanoramaUiPanel{nullptr};
     }
 
-    [[nodiscard]] PanoramaUiPanel getPanel(std::size_t index) const noexcept
+    [[nodiscard]] HudInWorldPanelIndex getIndexOfLastPanel() const noexcept
     {
-        const auto containerPanel = containerPanelPointer.get();
-        if (!containerPanel)
-            return PanoramaUiPanel{ nullptr };
-
-        if (const auto children = containerPanel.children()) {
-            if (children->size > 0 && static_cast<std::size_t>(children->size) > index)
-                return PanoramaUiPanel{ children->memory[index] };
+        if (containerPanelChildren.size > 0) {
+            assert(containerPanelChildren.size <= (std::numeric_limits<HudInWorldPanelIndex>::max)());
+            return static_cast<HudInWorldPanelIndex>(containerPanelChildren.size - 1);
         }
-        return PanoramaUiPanel{ nullptr };
+        return 0;
     }
 
-    void hidePanels(std::size_t fromPanelIndex, PanelConfigurator panelConfigurator) const noexcept
-    {
-        for (std::size_t i = fromPanelIndex; i < T::kMaxNumberOfPanels; ++i) {
-            const auto panel = getPanel(i);
-            if (!panel)
-                break;
-
-            if (const auto style = panel.getStyle())
-                panelConfigurator.panelStyle(*style).setOpacity(0.0f);
-        }
-    }
-
-private:
-    PanoramaPanelPointer containerPanelPointer;
+    const cs2::CUIPanel::childrenVector& containerPanelChildren;
 };

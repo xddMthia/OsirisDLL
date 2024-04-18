@@ -1,9 +1,6 @@
 #pragma once
 
-#include "ClientModeImpl.h"
-#include "EntitySystemImpl.h"
 #include "FileNameSymbolTableImpl.h"
-#include "FileSystemImpl.h"
 #include "GameRulesImpl.h"
 #include "MemAllocImpl.h"
 #include "PanelImpl.h"
@@ -12,28 +9,13 @@
 #include "PanoramaLabelImpl.h"
 #include "PanoramaUiEngineImpl.h"
 #include "PanoramaUiPanelImpl.h"
-#include "PlantedC4Impl.h"
+#include "TopLevelWindowImpl.h"
 
 #include <GlobalContext/GlobalContext.h>
-
-inline const ClientModeImpl& ClientModeImpl::instance() noexcept
-{
-    return GlobalContext::instance().fullContext().gameClasses().clientMode;
-}
-
-inline const EntitySystemImpl& EntitySystemImpl::instance() noexcept
-{
-    return GlobalContext::instance().fullContext().gameClasses().entitySystem;
-}
 
 inline const FileNameSymbolTableImpl& FileNameSymbolTableImpl::instance() noexcept
 {
     return GlobalContext::instance().fullContext().gameClasses().fileNameSymbolTable;
-}
-
-inline const FileSystemImpl& FileSystemImpl::instance() noexcept
-{
-    return GlobalContext::instance().fullContext().gameClasses().fileSystem;
 }
 
 inline const GameRulesImpl& GameRulesImpl::instance() noexcept
@@ -76,7 +58,7 @@ inline const PanoramaUiPanelImpl& PanoramaUiPanelImpl::instance() noexcept
     return GlobalContext::instance().fullContext().gameClasses().panoramaUiPanelOffsets;
 }
 
-inline const PlantedC4Impl& PlantedC4Impl::instance() noexcept
+inline const TopLevelWindowImpl& TopLevelWindowImpl::instance() noexcept
 {
-    return GlobalContext::instance().fullContext().gameClasses().plantedC4;
+    return GlobalContext::instance().fullContext().gameClasses().topLevelWindow;
 }

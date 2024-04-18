@@ -62,9 +62,49 @@ public:
         setProperty(propertyFactory.zIndex(zIndex));
     }
 
-    void setImageShadow(const ImageShadowParams& params) const noexcept
+    void setImageShadow(const PanelShadowParams& params) const noexcept
     {
         setProperty(propertyFactory.imageShadow(params));
+    }
+
+    void setPosition(cs2::CUILength x, cs2::CUILength y) const noexcept
+    {
+        setProperty(propertyFactory.position(x, y));
+    }
+
+    void setTransformOrigin(cs2::CUILength x, cs2::CUILength y) const noexcept
+    {
+        setProperty(propertyFactory.transformOrigin(x, y));
+    }
+
+    void setAlign(cs2::EHorizontalAlignment horizontalAlignment, cs2::EVerticalAlignment verticalAlignment) const noexcept
+    {
+        setProperty(propertyFactory.align(horizontalAlignment, verticalAlignment));
+    }
+
+    void setWashColor(cs2::Color color) const noexcept
+    {
+        setProperty(propertyFactory.washColor(color));
+    }
+
+    void setFlowChildren(cs2::EFlowDirection flowDirection) const noexcept
+    {
+        setProperty(propertyFactory.flowChildren(flowDirection));
+    }
+
+    void setFont(std::string_view fontFamily, float fontSize, cs2::EFontWeight fontWeight) const noexcept
+    {
+        setProperty(propertyFactory.font(fontFamily, fontSize, fontWeight));
+    }
+
+    void setTextShadow(const PanelShadowParams& params) const noexcept
+    {
+        setProperty(propertyFactory.textShadow(params));
+    }
+
+    void setMargin(cs2::CUILength left, cs2::CUILength top, cs2::CUILength right, cs2::CUILength bottom) const noexcept
+    {
+        setProperty(propertyFactory.margin(left, top, right, bottom));
     }
 
 private:

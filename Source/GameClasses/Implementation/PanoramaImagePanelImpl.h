@@ -6,10 +6,16 @@
 struct PanoramaImagePanelImpl {
     explicit PanoramaImagePanelImpl(const PanoramaImagePanelPatterns& panoramaImagePanelPatterns) noexcept
         : setImage{panoramaImagePanelPatterns.setImage()}
+        , constructor{panoramaImagePanelPatterns.constructor()}
+        , size{panoramaImagePanelPatterns.size()}
+        , imagePropertiesOffset{panoramaImagePanelPatterns.imagePropertiesOffset()}
     {
     }
 
     [[nodiscard]] static const PanoramaImagePanelImpl& instance() noexcept;
 
-    cs2::CImagePanel::setImage setImage;
+    cs2::CImagePanel::SetImage* setImage;
+    cs2::CImagePanel::Constructor* constructor;
+    std::uint32_t* size;
+    ImagePropertiesOffset imagePropertiesOffset;
 };

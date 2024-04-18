@@ -4,6 +4,7 @@
 
 #include <Platform/Macros/IsPlatform.h>
 #include <Platform/Macros/PlatformSpecific.h>
+#include <Utils/Pad.h>
 
 #include "Color.h"
 #include "CUtlMap.h"
@@ -24,6 +25,8 @@ struct PanelHandle {
     {
         return panelIndex != -1;
     }
+
+    [[nodiscard]] constexpr bool operator==(const PanelHandle&) const = default;
 };
 
 struct CUIPanel;
@@ -48,6 +51,7 @@ struct CPanel2D {
 };
 
 struct CLabel : CPanel2D {
+    using Constructor = void(CLabel* thisptr, CPanel2D* parent, const char* id);
     using setTextInternal = void (*)(CLabel* thisptr, const char* value, int textType, bool trustedSource);
 };
 
@@ -74,6 +78,16 @@ struct CUILength {
         k_EUILengthLength,
         k_EUILengthPercent
     };
+
+    [[nodiscard]] static CUILength pixels(float value) noexcept
+    {
+        return CUILength{value, k_EUILengthLength};
+    }
+
+    [[nodiscard]] static CUILength percent(float value) noexcept
+    {
+        return CUILength{value, k_EUILengthPercent};
+    }
 
     float m_flValue;
     EUILengthTypes m_eType;
@@ -119,6 +133,126 @@ struct CStylePropertyImageShadow : CStyleProperty {
     Color color;
 };
 
+struct CStylePropertyPosition : CStyleProperty {
+    static constexpr auto kName{"position"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyPosition@panorama@@", "N8panorama22CStylePropertyPositionE")};
+
+    CUILength x;
+    CUILength y;
+    CUILength z;
+};
+
+struct CStylePropertyTransformOrigin : CStyleProperty {
+    static constexpr auto kName{"transform-origin"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyTransformOrigin@panorama@@", "N8panorama29CStylePropertyTransformOriginE")};
+
+    CUILength x;
+    CUILength y;
+    bool m_bParentRelative;
+};
+
+enum EHorizontalAlignment : std::uint8_t {
+	k_EHorizontalAlignmentUnset,
+	k_EHorizontalAlignmentLeft,
+	k_EHorizontalAlignmentCenter,
+	k_EHorizontalAlignmentRight
+};
+
+enum EVerticalAlignment : std::uint8_t {
+	k_EVerticalAlignmentUnset,
+	k_EVerticalAlignmentTop,
+	k_EVerticalAlignmentCenter,
+	k_EVerticalAlignmentBottom
+};
+
+struct CStylePropertyAlign : CStyleProperty {
+    static constexpr auto kName{"align"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyAlign@panorama@@", "N8panorama19CStylePropertyAlignE")};
+
+    EHorizontalAlignment m_eHorizontalAlignment;
+    EVerticalAlignment m_eVerticalAlignment;
+};
+
+struct CStylePropertyWashColor : CStyleProperty {
+    static constexpr auto kName{"wash-color"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyWashColor@panorama@@", "N8panorama23CStylePropertyWashColorE")};
+
+    Color color;
+    bool fullySet;
+};
+
+enum EFlowDirection : std::uint8_t {
+    k_EFlowNone = 1,
+    k_EFlowDown,
+    k_EFlowRight
+};
+
+struct CStylePropertyFlowChildren : CStyleProperty {
+    static constexpr auto kName{"flow-children"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyFlowChildren@panorama@@", "N8panorama26CStylePropertyFlowChildrenE")};
+
+    EFlowDirection m_eFlowDirection;
+};
+
+enum EFontStyle : std::int8_t {
+    k_EFontStyleUnset = -1,
+    k_EFontStyleNormal = 0,
+    k_EFontStyleItalic = 2,
+};
+
+enum EFontWeight : std::int8_t {
+    k_EFontWeightUnset = -1,
+    k_EFontWeightNormal = 0,
+    k_EFontWeightMedium = 1,
+    k_EFontWeightBold = 2,
+    k_EFontWeightBlack = 3,
+    k_EFontWeightThin = 4,
+    k_EFontWeightLight = 5,
+    k_EFontWeightSemiBold = 6,
+};
+
+enum EFontStretch : std::int8_t {
+    k_EFontStretchUnset = -1,
+    k_EFontStretchNormal = 0,
+    k_EFontStretchCondensed = 1,
+    k_EFontStretchExpanded = 2
+};
+
+struct CStylePropertyFont : CStyleProperty {
+    static constexpr auto kName{"font"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyFont@panorama@@", "N8panorama18CStylePropertyFontE")};
+
+    CUtlString m_strFontFamily;
+    float m_flFontSize;
+    EFontStyle m_eFontStyle;
+    EFontWeight m_eFontWeight;
+    EFontStretch m_eFontStretch;
+};
+
+struct CStylePropertyTextShadow : CStyleProperty {
+    static constexpr auto kName{"text-shadow"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyTextShadow@panorama@@", "N8panorama24CStylePropertyTextShadowE")};
+
+    bool fullySet;
+    CUILength horizontalOffset;
+    CUILength verticalOffset;
+    CUILength blurRadius;
+    float strength;
+    Color color;
+};
+
+struct CStylePropertyDimensionsBase : CStyleProperty {
+    CUILength m_left;
+    CUILength m_top;
+    CUILength m_right;
+    CUILength m_bottom;
+};
+
+struct CStylePropertyMargin : CStylePropertyDimensionsBase {
+    static constexpr auto kName{"margin"};
+    static constexpr auto kMangledTypeName{WIN32_LINUX(".?AVCStylePropertyMargin@panorama@@", "N8panorama20CStylePropertyMarginE")};
+};
+
 struct CPanelStyle {
     using SetProperty = void(CPanelStyle* thisptr, CStyleProperty* styleProperty, bool transition);
 
@@ -139,8 +273,16 @@ struct CUIPanel {
     using classesVector = CUtlVector<CPanoramaSymbol>;
 };
 
+struct ImageProperties {
+    PAD(16);
+    int textureWidth;
+    int textureHeight;
+    float scale;
+};
+
 struct CImagePanel : CPanel2D {
-    using setImage = void (*)(CImagePanel* thisptr, const char* imageUrl);
+    using Constructor = void(CImagePanel* thisptr, CPanel2D* parent, const char* id);
+    using SetImage = void(CImagePanel* thisptr, const char* imageUrl, const char* defaultImageUrl, ImageProperties* properties);
 };
 
 struct CTransform3D {
@@ -155,6 +297,10 @@ struct CTransformTranslate3D : CTransform3D {
 
 struct CTransformScale3D : CTransform3D {
     Vector m_VecScale;
+};
+
+struct CTopLevelWindow {
+    using m_flScaleFactor = float;
 };
 
 }

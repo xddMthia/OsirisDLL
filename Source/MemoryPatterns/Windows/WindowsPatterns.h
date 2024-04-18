@@ -1,10 +1,11 @@
 #pragma once
 
-#include "ClientModePatternsWindows.h"
 #include "ClientPatternsWindows.h"
+#include "EntityPatternsWindows.h"
 #include "EntitySystemPatternsWindows.h"
 #include "FileSystemPatternsWindows.h"
 #include "GameRulesPatternsWindows.h"
+#include "GameSceneNodePatternsWindows.h"
 #include "MemAllocPatternsWindows.h"
 #include "PanelPatternsWindows.h"
 #include "PanelStylePatternsWindows.h"
@@ -13,5 +14,10 @@
 #include "PanoramaUiEnginePatternsWindows.h"
 #include "PanoramaUiPanelPatternsWindows.h"
 #include "PlantedC4PatternsWindows.h"
+#include "PlayerControllerPatternsWindows.h"
+#include "PlayerPawnPatternsWindows.h"
 #include "SdlPatternWindows.h"
 #include "SoundSystemPatternsWindows.h"
+#include "TopLevelWindowPatternsWindows.h"
+#include "WeaponServicesPatternsWindows.h"
+#include "WeaponVDataPatternsWindows.h"
