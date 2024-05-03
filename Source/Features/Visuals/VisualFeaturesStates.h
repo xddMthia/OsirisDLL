@@ -1,9 +1,7 @@
 #pragma once
 
-#include "ScopeOverlayRemover.h"
-#include "SniperScopeBlurRemovalFeature.h"
+#include "PlayerInformationThroughWalls/PlayerInformationThroughWallsState.h"
 
 struct VisualFeaturesStates {
-    ScopeOverlayRemoverState scopeOverlayRemoverState;
-    SniperScopeBlurRemovalFeatureState sniperScopeBlurRemovalFeatureState;
+    PlayerInformationThroughWallsState playerInformationThroughWallsState;
 };
